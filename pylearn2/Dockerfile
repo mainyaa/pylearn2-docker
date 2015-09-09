@@ -1,6 +1,7 @@
-
-
 FROM ubuntu:14.04
+
+MAINTAINER Traun Leyden <traun.leyden@gmail.com>
+MAINTAINER Kazuyuki Mori <mainya@gmail.com>
 
 # Get latest ubuntu packages
 RUN apt-get update
@@ -20,7 +21,17 @@ RUN cd /opt && git clone git://github.com/lisa-lab/pylearn2.git
 RUN cd /opt/pylearn2 && python setup.py develop
 
 # set Data path
-RUN bash -c 'echo "export PYLEARN2_DATA_PATH=/opt/data" >> /.bashrc'
+ENV PYLEARN2_DATA_PATH /opt/data
 
 # set Scripts path
-RUN bash -c 'echo "export PATH=/opt/pylearn2/pylearn2/scripts:$PATH" >> /.bashrc'
+ENV PATH /opt/pylearn2/pylearn2/scripts:$PATH
+ENV PATH /usr/local/cuda/bin:$PATH
+VOLUME /usr/local/cuda
+WORKDIR /opt/pylearn2/pylearn2/scripts
+
+CMD [ "/bin/bash" ]
+# docker run -it mainyaa/pylearn2 bash
+# docker run -it --privileged -v /usr/lib64/libcuda.so:/usr/lib64/libcuda.so -v /usr/lib64/libcuda.so.1:/usr/lib64/libcuda.so.1 -v /usr/local/cuda:/usr/local/cuda mainyaa/pylearn2 bash
+# python datasets/download_mnist.py
+
+
